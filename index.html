@@ -1003,6 +1003,43 @@
                 }
             }
 
+            function showSuccessNotification(message) {
+                // Створити елемент сповіщення
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(45deg, var(--carnival-green), var(--carnival-blue));
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                    z-index: 9999;
+                    font-weight: 600;
+                    font-family: 'Nunito', sans-serif;
+                    transform: translateX(100%);
+                    transition: transform 0.3s ease;
+                    max-width: 300px;
+                `;
+                notification.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>${message}`;
+
+                document.body.appendChild(notification);
+
+                // Анімація появи
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+
+                // Приховати через 5 секунд
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 5000);
+            }
+
             async function handlePrint() {
                 if (!window.jspdf) {
                     console.warn('jsPDF не завантажено');
@@ -1025,6 +1062,9 @@
                 const marginY = (pageHeight - imgHeight) / 2;
                 pdf.addImage(dataUrl, 'PNG', marginX, marginY, imgWidth, imgHeight);
                 pdf.save('zaproschennya.pdf');
+
+                // Показати сповіщення про успішне збереження
+                showSuccessNotification('Запрошення збережено у файлах вашого пристрою');
             }
 
             function handleKeydown(evt) {
