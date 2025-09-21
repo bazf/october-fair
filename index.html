@@ -27,6 +27,13 @@
             --autumn-orange: #ff8c42;
             --autumn-gold: #ffd662;
             --autumn-red: #d2691e;
+            /* Ukrainian flag colors */
+            --ua-blue: #1c6fb8;
+            --ua-yellow: #ffd43b;
+            --sky-blue: #87ceeb;
+            --autumn-orange: #ff8c42;
+            --autumn-gold: #ffd662;
+            --autumn-red: #d2691e;
         }
 
         * {
@@ -230,6 +237,17 @@
         .hero p {
             font-size: 1.2rem;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Ukrainian ribbon styling */
+        .ribbon {
+            margin-bottom: 1rem;
+        }
+
+        .ribbon svg {
+            width: 100%;
+            height: 80px;
+            display: block;
         }
 
         /* Card styling */
@@ -543,6 +561,15 @@
 
     <header class="hero">
         <div class="container">
+            <div class="text-center mb-2 ribbon">
+                <!-- UA wave ribbon -->
+                <svg viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M0,80 C200,120 340,40 580,60 C800,80 950,120 1200,70 L1200,0 L0,0 Z" fill="var(--ua-blue)">
+                    </path>
+                    <path d="M0,90 C220,130 360,50 590,70 C820,90 960,130 1200,80 L1200,50 L0,50 Z"
+                        fill="var(--ua-yellow)"></path>
+                </svg>
+            </div>
             <h1 class="title-font">
                 <i class="fas fa-star"></i> Приєднуйтесь до нас! <i class="fas fa-star"></i>
             </h1>
@@ -625,28 +652,31 @@
                     Введіть ім'я та прізвище гостей, яких хочете запросити (до 7 осіб).
                 </p>
                 <div id="guestListContainer" class="guest-list"></div>
-                <button id="addGuestBtn" type="button" class="btn-carnival" style="margin-top: 1rem; background: linear-gradient(45deg, var(--carnival-yellow), var(--carnival-orange));">
-                    <i class="fas fa-user-plus"></i> Додати гостя
-                </button>
-                <p id="guestLimitNotice" class="guest-limit" aria-live="polite"></p>
-            </section>
-            <footer class="modal-card-foot" style="justify-content: space-between; flex-wrap: wrap;">
-                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                    <button id="downloadInvitationBtn" type="button" class="btn-carnival" disabled>
-                        <i class="fas fa-download"></i> Завантажити запрошення
+                <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                    <button id="addGuestBtn" type="button" class="btn-carnival" style="background: linear-gradient(45deg, var(--carnival-yellow), var(--carnival-orange));">
+                        <i class="fas fa-user-plus"></i> Додати гостя
                     </button>
                     <button id="printInvitationBtn" type="button" class="btn-carnival" style="background: linear-gradient(45deg, var(--carnival-purple), var(--carnival-blue));" disabled>
                         <i class="fas fa-print"></i> Друк PDF
                     </button>
                 </div>
-                <button id="closeInvitationModalFooter" type="button" class="button is-light">Закрити</button>
-            </footer>
+                <p id="guestLimitNotice" class="guest-limit" aria-live="polite"></p>
+            </section>
         </div>
     </div>
 
     <div id="invitationPreviewWrapper" class="invitation-preview hidden" role="presentation">
         <div id="invitationPreview" class="invitation-card">
             <div class="invitation-header">
+                <div class="text-center mb-2 ribbon">
+                    <!-- UA wave ribbon -->
+                    <svg viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true">
+                        <path d="M0,80 C200,120 340,40 580,60 C800,80 950,120 1200,70 L1200,0 L0,0 Z" fill="var(--ua-blue)">
+                        </path>
+                        <path d="M0,90 C220,130 360,50 590,70 C820,90 960,130 1200,80 L1200,50 L0,50 Z"
+                            fill="var(--ua-yellow)"></path>
+                    </svg>
+                </div>
                 <h2 class="title-font">Святкове запрошення</h2>
                 <p>Благодійний ярмарок до Дня захисників і захисниць України</p>
             </div>
@@ -792,12 +822,10 @@
 
             const guestContainer = document.getElementById('guestListContainer');
             const addGuestBtn = document.getElementById('addGuestBtn');
-            const downloadBtn = document.getElementById('downloadInvitationBtn');
             const printBtn = document.getElementById('printInvitationBtn');
             const guestLimitNotice = document.getElementById('guestLimitNotice');
             const closeModalButtons = [
-                document.getElementById('closeInvitationModal'),
-                document.getElementById('closeInvitationModalFooter')
+                document.getElementById('closeInvitationModal')
             ].filter(Boolean);
             const modalBackdrop = modal.querySelector('.modal-background');
             const previewWrapper = document.getElementById('invitationPreviewWrapper');
@@ -856,7 +884,6 @@
             function updateActionsAvailability() {
                 const guests = collectGuestNames();
                 const hasGuests = guests.length > 0;
-                downloadBtn.disabled = !hasGuests;
                 printBtn.disabled = !hasGuests;
             }
 
@@ -971,36 +998,6 @@
                 }
             }
 
-            function triggerImageDownload(dataUrl, filename) {
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                if (isIOS) {
-                    const win = window.open();
-                    if (win) {
-                        win.document.write(`<html><head><title>${filename}</title></head><body style="margin:0;background:#fff;text-align:center;"><img src="${dataUrl}" alt="Запрошення" style="width:100%;height:auto;" /></body></html>`);
-                        win.document.close();
-                    } else {
-                        alert('Щоб зберегти зображення, дозвольте відкриття нових вкладок у браузері.');
-                    }
-                } else {
-                    const link = document.createElement('a');
-                    link.href = dataUrl;
-                    link.download = filename;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }
-            }
-
-            async function handleDownload() {
-                const guests = collectGuestNames();
-                if (!guests.length) { return; }
-                renderGuestList(guests);
-                const canvas = await captureInvitationCanvas();
-                if (!canvas) { return; }
-                const dataUrl = canvas.toDataURL('image/png');
-                triggerImageDownload(dataUrl, 'zaproschennya.png');
-            }
-
             async function handlePrint() {
                 if (!window.jspdf) {
                     console.warn('jsPDF не завантажено');
@@ -1034,7 +1031,6 @@
             openBtn.addEventListener('click', () => toggleModal(true));
             closeModalButtons.forEach(btn => btn.addEventListener('click', () => toggleModal(false)));
             modalBackdrop?.addEventListener('click', () => toggleModal(false));
-            downloadBtn.addEventListener('click', handleDownload);
             printBtn.addEventListener('click', handlePrint);
             addGuestBtn.addEventListener('click', () => addGuestEntry());
             document.addEventListener('keydown', handleKeydown);
