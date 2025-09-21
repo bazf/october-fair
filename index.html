@@ -433,20 +433,18 @@
     <!-- Remove Bootstrap JS, we're using Bulma now -->
 
     <script>
-
-        <script>
         /************ EDIT EVENT SETTINGS HERE ************/
-            // Local time for the event (interpreted in the visitor's timezone)
-            // Change to current year automatically if month/day passed:
-            const EVENT_LOCAL_ISO = "2025-10-01T13:20:00"; // 1 Oct, 13:20
-            const EVENT_DURATION_MIN = 360; // for calendar links (minutes) - 6 hours
-            const EVENT_TITLE = "Благодійний ярмарок до Дня захисників і захисниць України";
-            const EVENT_LOCATION = "Зубрянський ліцей Солонківської сільської ради";
-            const EVENT_DESC = "Розваги для всієї родини: гірки, батути, вокальні номери, аквагрим, куліш, ковбаски, напої та багато іншого.";
-            /**************************************************/
+        // Local time for the event (interpreted in the visitor's timezone)
+        // Change to current year automatically if month/day passed:
+        const EVENT_LOCAL_ISO = "2025-10-01T13:20:00"; // 1 Oct, 13:20
+        const EVENT_DURATION_MIN = 360; // for calendar links (minutes) - 6 hours
+        const EVENT_TITLE = "Благодійний ярмарок до Дня захисників і захисниць України";
+        const EVENT_LOCATION = "Зубрянський ліцей Солонківської сільської ради";
+        const EVENT_DESC = "Розваги для всієї родини: гірки, батути, вокальні номери, аквагрим, куліш, ковбаски, напої та багато іншого.";
+        /**************************************************/
 
-            // Normalize year (if author left old year)
-            function normalizeYear(date) {
+        // Normalize year (if author left old year)
+        function normalizeYear(date) {
             const d = new Date(date);
             const now = new Date();
             if (d < now && d.getFullYear() < now.getFullYear()) {
@@ -454,21 +452,21 @@
             }
             return d;
         }
-            const eventStart = normalizeYear(EVENT_LOCAL_ISO);
-            const whenText = new Intl.DateTimeFormat('uk-UA', {
-                weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
+        const eventStart = normalizeYear(EVENT_LOCAL_ISO);
+        const whenText = new Intl.DateTimeFormat('uk-UA', {
+            weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
         }).format(eventStart);
-            document.getElementById('whenText').textContent = whenText.charAt(0).toUpperCase() + whenText.slice(1);
+        document.getElementById('whenText').textContent = whenText.charAt(0).toUpperCase() + whenText.slice(1);
 
-            /* ---------- Calendar helpers ---------- */
-            function pad(n) { return String(n).padStart(2, '0'); }
-            function toGCalDate(d) {
+        /* ---------- Calendar helpers ---------- */
+        function pad(n) { return String(n).padStart(2, '0'); }
+        function toGCalDate(d) {
             return d.getUTCFullYear()
-            + pad(d.getUTCMonth() + 1)
-            + pad(d.getUTCDate()) + "T"
-            + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + "00Z";
+                + pad(d.getUTCMonth() + 1)
+                + pad(d.getUTCDate()) + "T"
+                + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + "00Z";
         }
-            (function setupCalendarLinks() {
+        (function setupCalendarLinks() {
             const end = new Date(eventStart.getTime() + EVENT_DURATION_MIN * 60000);
 
             // Google Calendar link
@@ -485,11 +483,11 @@
             if (isIOS) {
                 // For iOS, try to open in native Calendar app via data URL
                 const gcalBtn = document.getElementById('gcalLink');
-            gcalBtn.addEventListener('click', function (e) {
-                e.preventDefault();
+                gcalBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
 
-            // Try to create a calendar event data URL for iOS
-            const calendarData = `BEGIN:VCALENDAR
+                    // Try to create a calendar event data URL for iOS
+                    const calendarData = `BEGIN:VCALENDAR
             VERSION:2.0
             PRODID:-//Defender Day Fair//iOS//EN
             BEGIN:VEVENT
@@ -501,26 +499,26 @@
             END:VEVENT
             END:VCALENDAR`;
 
-            // Create blob and try to open
-            const blob = new Blob([calendarData], {type: 'text/calendar' });
-            const url = URL.createObjectURL(blob);
+                    // Create blob and try to open
+                    const blob = new Blob([calendarData], { type: 'text/calendar' });
+                    const url = URL.createObjectURL(blob);
 
-            // Try to open in Calendar app, fallback to Google Calendar
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'event.ics';
-            link.click();
+                    // Try to open in Calendar app, fallback to Google Calendar
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'event.ics';
+                    link.click();
 
                     // Also provide Google Calendar fallback
                     setTimeout(() => {
                         if (confirm('Відкрити також в Google Calendar?')) {
-                window.open(gcal.toString(), '_blank');
+                            window.open(gcal.toString(), '_blank');
                         }
                     }, 500);
                 });
 
-            gcalBtn.textContent = "Додати в Calendar";
-            gcalBtn.className = "btn btn-outline-dark";
+                gcalBtn.textContent = "Додати в Calendar";
+                gcalBtn.className = "btn btn-outline-dark";
             } else {
                 // For non-iOS, use Google Calendar as primary
                 document.getElementById('gcalLink').href = gcal.toString();
