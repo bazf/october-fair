@@ -942,6 +942,13 @@
                 return wrapper;
             }
 
+            function capitalizeNames(fullName) {
+                return fullName.split(' ').map(name => {
+                    if (name.length === 0) return name;
+                    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+                }).join(' ');
+            }
+
             function renderGuestList(names) {
                 guestNamesPreview.innerHTML = '';
                 names.forEach(name => {
@@ -949,7 +956,8 @@
                     const icon = document.createElement('i');
                     icon.className = 'fas fa-star';
                     li.appendChild(icon);
-                    const text = document.createTextNode(` ${name}`);
+                    const formattedName = capitalizeNames(name);
+                    const text = document.createTextNode(` ${formattedName}`);
                     li.appendChild(text);
                     guestNamesPreview.appendChild(li);
                 });
