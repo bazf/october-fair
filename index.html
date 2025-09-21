@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="uk">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Запрошення — Благодійний ярмарок до Дня захисників та захисниць України</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --sky: #bfeff7;
+            /* sky background like your poster */
+            --blue: #1c6fb8;
+            /* ribbon blue */
+            --yellow: #ffd43b;
+            /* ribbon yellow */
+            --coral: #f35a38;
+            /* accents (листя/ковбаски) */
+            --dark: #1b2a4e;
+        }
+
+        body {
+            background: var(--sky);
+            color: #14324a;
+        }
+
+        .hero {
+            background: linear-gradient(180deg, #d4f6fb 0%, var(--sky) 60%, #c9eef6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* wave ribbon to echo your poster */
+        .ribbon svg {
+            width: 100%;
+            height: 80px;
+            display: block;
+        }
+
+        .badge-dot {
+            width: .6rem;
+            height: .6rem;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .badge-blue {
+            background: var(--blue);
+        }
+
+        .badge-yellow {
+            background: var(--yellow);
+        }
+
+        .card {
+            border-radius: 1rem;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+        }
+
+        .leaf {
+            color: var(--coral);
+        }
+
+        .btn-ua {
+            background: linear-gradient(90deg, var(--blue), #2382de);
+            border: none;
+            color: #fff;
+        }
+
+        .btn-ua:hover {
+            filter: brightness(1.05);
+        }
+
+        .pill {
+            background: #ffffffcc;
+            border-radius: 999px;
+        }
+
+        footer a {
+            color: var(--blue);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="hero py-4">
+        <div class="container">
+            <div class="text-center mb-2 ribbon">
+                <!-- UA wave ribbon -->
+                <svg viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M0,80 C200,120 340,40 580,60 C800,80 950,120 1200,70 L1200,0 L0,0 Z" fill="var(--blue)">
+                    </path>
+                    <path d="M0,90 C220,130 360,50 590,70 C820,90 960,130 1200,80 L1200,50 L0,50 Z"
+                        fill="var(--yellow)"></path>
+                </svg>
+            </div>
+            <h1 class="display-6 fw-bold text-center">Приєднуйтесь до нас!</h1>
+            <p class="lead text-center mb-0">Благодійний ярмарок до Дня захисників і захисниць України<br />та свята
+                Покрови Пресвятої Богородиці</p>
+            <div class="text-center mt-2">
+                <span class="badge-dot badge-blue me-1"></span>
+                <span class="badge-dot badge-yellow me-1"></span>
+                <span class="badge-dot badge-blue me-1"></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-4">
+        <div class="row g-4">
+            <!-- Details -->
+            <section class="col-12 col-lg-7">
+                <div class="card p-4">
+                    <h2 class="h4 mb-3">Деталі події</h2>
+
+                    <!-- EDIT THESE CONSTANTS IN JS IF NEEDED -->
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><strong>Коли:</strong> <span id="whenText">Середа, 1 жовтня, початок о
+                                13:20</span></li>
+                        <li class="mb-2"><strong>Місце проведення:</strong> Зубрянський ліцей Солонківської сільської
+                            ради</li>
+                        <li class="mb-2"><strong>Для кого:</strong> від найменших до найстарших — ярмарок для всієї
+                            родини</li>
+                    </ul>
+
+                    <div class="pill px-3 py-2 mb-3">
+                        🎠 Розваги: надувні <strong>гірки</strong>, <strong>батути</strong>, іграшки, квести
+                    </div>
+                    <div class="pill px-3 py-2 mb-3">
+                        🎶 <strong>Вокальні номери</strong> та сцена
+                    </div>
+                    <div class="pill px-3 py-2 mb-3">
+                        🎨 <strong>Аквагрим</strong> для дітей
+                    </div>
+                    <div class="pill px-3 py-2">
+                        🍲 <strong>Куліш</strong>, 🌭 <strong>ковбаски</strong>, ☕ <strong>чай, кава, капучино</strong>
+                        — та багато іншого
+                    </div>
+                </div>
+
+                <div class="card p-4 mt-4">
+                    <h3 class="h5">Додати у календар</h3>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a id="icsLink" class="btn btn-outline-primary" href="#"
+                            download="Defender-Day-Fair.ics">Завантажити .ics</a>
+                        <a id="gcalLink" class="btn btn-outline-success" target="_blank" rel="noopener">Google
+                            Calendar</a>
+                    </div>
+                    <p class="small text-muted mt-2">Час у лінках формується для вашого часового поясу.</p>
+                </div>
+            </section>
+
+            <!-- CTA / Reminder -->
+            <aside class="col-12 col-lg-5">
+                <div class="card p-4 h-100">
+                    <h2 class="h4 mb-3">Не пропустіть подію</h2>
+                    <p class="mb-3">Натисніть кнопку нижче — ми надішлемо сповіщення <strong>за день</strong> і
+                        <strong>за 2 години</strong> до початку (якщо це підтримується вашим браузером).
+                    </p>
+                    <button id="remindBtn" class="btn btn-ua btn-lg w-100">
+                        🔔 Нагадати мені
+                    </button>
+                    <div id="remindStatus" class="mt-3 small text-muted"></div>
+
+                    <hr class="my-4" />
+                    <h3 class="h6">Питання & поширені випадки</h3>
+                    <ul class="small mb-0">
+                        <li>Сповіщення працюють з HTTPS (GitHub Pages ✅).</li>
+                        <li>У Chrome/Edge (Android/Desktop) можливе фонове планування. В інших — тримайте вкладку
+                            відкритою або додайте подію у календар.</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="container pb-5">
+        <div class="text-center">
+            <div class="text-muted small">
+                Дякуємо за підтримку наших захисників 💙💛
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS (optional, for components) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        /************ EDIT EVENT SETTINGS HERE ************/
+        // Local time for the event (interpreted in the visitor's timezone)
+        // Change to current year automatically if month/day passed:
+        const EVENT_LOCAL_ISO = "2025-10-01T13:20:00"; // 1 Oct, 13:20
+        const EVENT_DURATION_MIN = 120; // for calendar links (minutes)
+        const EVENT_TITLE = "Благодійний ярмарок до Дня захисників і захисниць України";
+        const EVENT_LOCATION = "Зубрянський ліцей Солонківської сільської ради";
+        const EVENT_DESC = "Розваги для всієї родини: гірки, батути, вокальні номери, аквагрим, куліш, ковбаски, напої та багато іншого.";
+        /**************************************************/
+
+        // Normalize year (if author left old year)
+        function normalizeYear(date) {
+            const d = new Date(date);
+            const now = new Date();
+            if (d < now && d.getFullYear() < now.getFullYear()) {
+                d.setFullYear(now.getFullYear());
+            }
+            return d;
+        }
+        const eventStart = normalizeYear(EVENT_LOCAL_ISO);
+        const whenText = new Intl.DateTimeFormat('uk-UA', {
+            weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
+        }).format(eventStart);
+        document.getElementById('whenText').textContent = whenText.charAt(0).toUpperCase() + whenText.slice(1);
+
+        /* ---------- Calendar helpers ---------- */
+        function pad(n) { return String(n).padStart(2, '0'); }
+        function toGCalDate(d) {
+            return d.getUTCFullYear()
+                + pad(d.getUTCMonth() + 1)
+                + pad(d.getUTCDate()) + "T"
+                + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + "00Z";
+        }
+        (function setupCalendarLinks() {
+            const end = new Date(eventStart.getTime() + EVENT_DURATION_MIN * 60000);
+            const gcal = new URL("https://calendar.google.com/calendar/render");
+            gcal.searchParams.set("action", "TEMPLATE");
+            gcal.searchParams.set("text", EVENT_TITLE);
+            gcal.searchParams.set("details", EVENT_DESC);
+            gcal.searchParams.set("location", EVENT_LOCATION);
+            gcal.searchParams.set("dates", `${toGCalDate(eventStart)}/${toGCalDate(end)}`);
+            document.getElementById('gcalLink').href = gcal.toString();
+
+            // Basic ICS
+            const uid = crypto.randomUUID();
+            const dtStamp = toGCalDate(new Date()).replace(/Z$/, 'Z');
+            const ics =
+                `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Defender Day Fair//UA Invite//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${dtStamp}
+DTSTART:${toGCalDate(eventStart)}
+DTEND:${toGCalDate(end)}
+SUMMARY:${EVENT_TITLE}
+DESCRIPTION:${EVENT_DESC}
+LOCATION:${EVENT_LOCATION}
+END:VEVENT
+END:VCALENDAR`;
+            const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+            document.getElementById('icsLink').href = URL.createObjectURL(blob);
+        })();
+
+        /* ---------- Notifications ---------- */
+        const statusEl = document.getElementById('remindStatus');
+        const remindBtn = document.getElementById('remindBtn');
+
+        const oneDayBefore = new Date(eventStart.getTime() - 24 * 60 * 60 * 1000);
+        const twoHoursBefore = new Date(eventStart.getTime() - 2 * 60 * 60 * 1000);
+
+        function supportText() {
+            const hasSW = 'serviceWorker' in navigator;
+            const hasNotif = 'Notification' in window;
+            const hasTrigger = 'TimestampTrigger' in window || ('showTrigger' in Notification.prototype);
+            if (!hasSW || !hasNotif) return "Ваш браузер не підтримує веб-сповіщення. Скористайтеся посиланнями на календар вище.";
+            if (hasTrigger) return "Планування сповіщень у фоновому режимі доступне ✅";
+            return "Ваш браузер пока не підтримує фонове планування. Ми встановимо локальні таймери (працюють, коли вкладка відкрита) і радимо додати подію у календар.";
+        }
+        statusEl.textContent = supportText();
+
+        async function registerSW() {
+            // Use external sw.js if present; fallback to inline blob (works on GH Pages).
+            try {
+                // Prefer /sw.js at site root or same folder
+                const reg = await navigator.serviceWorker.register('./sw.js').catch(async () => {
+                    const code = `
+            self.addEventListener('install', ()=>self.skipWaiting());
+            self.addEventListener('activate', e=>e.waitUntil(self.clients.claim()));
+            self.addEventListener('notificationclick', event => {
+              event.notification.close();
+              event.waitUntil(clients.openWindow('./'));
+            });
+          `;
+                    const blob = new Blob([code], { type: 'text/javascript' });
+                    const url = URL.createObjectURL(blob);
+                    return navigator.serviceWorker.register(url);
+                });
+                return reg;
+            } catch (e) {
+                console.error(e);
+                throw new Error("Не вдалося зареєструвати Service Worker.");
+            }
+        }
+
+        function scheduleInPageTimers() {
+            // Fallback timers (work only while tab is open)
+            const now = Date.now();
+            const plan = [
+                { t: oneDayBefore, tag: 'fair-1d', title: 'Нагадування: ярмарок уже завтра', body: 'Початок о 13:20. Зустрінемось на ярмарку!' },
+                { t: twoHoursBefore, tag: 'fair-2h', title: 'Нагадування: за 2 години', body: 'Скоро початок — о 13:20.' }
+            ];
+            for (const p of plan) {
+                const diff = p.t.getTime() - now;
+                if (diff > 0) {
+                    setTimeout(() => {
+                        if (Notification.permission === 'granted') new Notification(p.title, { body: p.body, tag: p.tag });
+                    }, diff);
+                }
+            }
+        }
+
+        remindBtn.addEventListener('click', async () => {
+            try {
+                if (!('Notification' in window)) {
+                    statusEl.textContent = "Ваш браузер не підтримує сповіщення. Додайте подію у календар.";
+                    return;
+                }
+                const perm = await Notification.requestPermission();
+                if (perm !== 'granted') {
+                    statusEl.textContent = "Сповіщення вимкнено. Спробуйте ще раз або додайте подію у календар.";
+                    return;
+                }
+                const reg = await registerSW();
+
+                const supportsTrigger = ('TimestampTrigger' in window) && ('showTrigger' in Notification.prototype || 'showTrigger' in (Notification.__proto__ || {}));
+                const schedule = async (date, tag, title, body) => {
+                    if (date.getTime() <= Date.now()) return;
+                    if (supportsTrigger) {
+                        // Background schedule (Chromium with Notification Triggers)
+                        await reg.showNotification(title, {
+                            body, tag, showTrigger: new TimestampTrigger(date.getTime()),
+                            icon: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23ffd43b" d="M12 2a7 7 0 0 0-7 7v3.1L3.3 14a1 1 0 0 0 .3 1.4l1.4.9V19a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-2.7l1.4-.9a1 1 0 0 0 .3-1.4L19 12.9V9a7 7 0 0 0-7-7Z"/></svg>'
+                        });
+                    }
+                };
+
+                await schedule(oneDayBefore, 'fair-1d', 'Нагадування: ярмарок уже завтра', 'Початок о 13:20. Зустрінемось на ярмарку!');
+                await schedule(twoHoursBefore, 'fair-2h', 'Нагадування: за 2 години', 'Скоро початок — о 13:20.');
+
+                if (!('TimestampTrigger' in window)) {
+                    scheduleInPageTimers();
+                }
+
+                statusEl.innerHTML = "Готово! Сповіщення заплановано. " +
+                    (('TimestampTrigger' in window) ? "Працюватиме у фоновому режимі ✅" : "Таймери активні, але краще додати до календаря ☺️");
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent = "Виникла помилка під час налаштування сповіщень. Спробуйте додати подію у календар.";
+            }
+        });
+    </script>
+</body>
+
+</html>
