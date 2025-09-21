@@ -521,6 +521,7 @@
         }
 
         @keyframes float {
+
             0%,
             100% {
                 transform: translateY(0);
@@ -628,7 +629,8 @@
                     <a id="gcalLink" class="btn-carnival">
                         <i class="fab fa-google"></i> Google Calendar
                     </a>
-                    <button id="openInvitationModal" type="button" class="btn-carnival" style="background: linear-gradient(45deg, var(--carnival-green), var(--carnival-blue));">
+                    <button id="openInvitationModal" type="button" class="btn-carnival"
+                        style="background: linear-gradient(45deg, var(--carnival-green), var(--carnival-blue));">
                         <i class="fas fa-envelope-open-text"></i> Отримати запрошення
                     </button>
                 </div>
@@ -643,7 +645,8 @@
     <div id="invitationModal" class="modal">
         <div class="modal-background"></div>
         <div class="modal-card">
-            <header class="modal-card-head" style="background: linear-gradient(45deg, var(--carnival-orange), var(--carnival-red)); color: #fff;">
+            <header class="modal-card-head"
+                style="background: linear-gradient(45deg, var(--carnival-orange), var(--carnival-red)); color: #fff;">
                 <p class="modal-card-title title-font" style="font-size: 1.4rem;">Створити запрошення</p>
                 <button class="delete" aria-label="close" id="closeInvitationModal"></button>
             </header>
@@ -653,10 +656,13 @@
                 </p>
                 <div id="guestListContainer" class="guest-list"></div>
                 <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
-                    <button id="addGuestBtn" type="button" class="btn-carnival" style="background: linear-gradient(45deg, var(--carnival-yellow), var(--carnival-orange));">
+                    <button id="addGuestBtn" type="button" class="btn-carnival"
+                        style="background: linear-gradient(45deg, var(--carnival-yellow), var(--carnival-orange));">
                         <i class="fas fa-user-plus"></i> Додати гостя
                     </button>
-                    <button id="printInvitationBtn" type="button" class="btn-carnival" style="background: linear-gradient(45deg, var(--carnival-purple), var(--carnival-blue));" disabled>
+                    <button id="printInvitationBtn" type="button" class="btn-carnival"
+                        style="background: linear-gradient(45deg, var(--carnival-purple), var(--carnival-blue));"
+                        disabled>
                         <i class="fas fa-print"></i> Друк PDF
                     </button>
                 </div>
@@ -671,7 +677,8 @@
                 <div class="text-center mb-2 ribbon">
                     <!-- UA wave ribbon -->
                     <svg viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true">
-                        <path d="M0,80 C200,120 340,40 580,60 C800,80 950,120 1200,70 L1200,0 L0,0 Z" fill="var(--ua-blue)">
+                        <path d="M0,80 C200,120 340,40 580,60 C800,80 950,120 1200,70 L1200,0 L0,0 Z"
+                            fill="var(--ua-blue)">
                         </path>
                         <path d="M0,90 C220,130 360,50 590,70 C820,90 960,130 1200,80 L1200,50 L0,50 Z"
                             fill="var(--ua-yellow)"></path>
@@ -687,7 +694,8 @@
                     <p><i class="fas fa-clock"></i> <span data-invite="when"></span></p>
                     <p><i class="fas fa-map-marker-alt"></i> <span data-invite="location"></span></p>
                 </div>
-                <p class="invitation-footer">Буде гаряче від розваг, смаколиків та добрих справ!<br />Чекаємо на вас!</p>
+                <p class="invitation-footer">Буде гаряче від розваг, смаколиків та добрих справ!<br />Чекаємо на вас!
+                </p>
             </div>
             <div class="invitation-ribbons">
                 <span></span>
