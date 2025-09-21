@@ -158,7 +158,9 @@
                         <a id="gcalLink" class="btn btn-outline-success" target="_blank" rel="noopener">Google
                             Calendar</a>
                     </div>
-                    <p class="small text-muted mt-2">Час у лінках формується для вашого часового поясу.</p>
+                    <p class="small text-muted mt-2">Час у лінках формується для вашого часового поясу.
+                        <span id="calendarHelp"></span>
+                    </p>
                 </div>
             </section>
 
@@ -276,13 +278,69 @@
         }
         (function setupCalendarLinks() {
             const end = new Date(eventStart.getTime() + EVENT_DURATION_MIN * 60000);
+
+            // Google Calendar link
             const gcal = new URL("https://calendar.google.com/calendar/render");
             gcal.searchParams.set("action", "TEMPLATE");
             gcal.searchParams.set("text", EVENT_TITLE);
             gcal.searchParams.set("details", EVENT_DESC);
             gcal.searchParams.set("location", EVENT_LOCATION);
             gcal.searchParams.set("dates", `${toGCalDate(eventStart)}/${toGCalDate(end)}`);
-            document.getElementById('gcalLink').href = gcal.toString();
+
+            // Detect iOS for better calendar integration
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+            if (isIOS) {
+                // For iOS, try to open in native Calendar app via data URL
+                const gcalBtn = document.getElementById('gcalLink');
+                gcalBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // Try to create a calendar event data URL for iOS
+                    const calendarData = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Defender Day Fair//iOS//EN
+BEGIN:VEVENT
+DTSTART:${toGCalDate(eventStart)}
+DTEND:${toGCalDate(end)}
+SUMMARY:${EVENT_TITLE}
+DESCRIPTION:${EVENT_DESC}
+LOCATION:${EVENT_LOCATION}
+END:VEVENT
+END:VCALENDAR`;
+
+                    // Create blob and try to open
+                    const blob = new Blob([calendarData], { type: 'text/calendar' });
+                    const url = URL.createObjectURL(blob);
+
+                    // Try to open in Calendar app, fallback to Google Calendar
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'event.ics';
+                    link.click();
+
+                    // Also provide Google Calendar fallback
+                    setTimeout(() => {
+                        if (confirm('Відкрити також в Google Calendar?')) {
+                            window.open(gcal.toString(), '_blank');
+                        }
+                    }, 500);
+                });
+
+                gcalBtn.textContent = "Додати в Calendar";
+                gcalBtn.className = "btn btn-outline-dark";
+            } else {
+                // For non-iOS, use Google Calendar as primary
+                document.getElementById('gcalLink').href = gcal.toString();
+            }
+
+            // Update help text based on platform
+            const helpEl = document.getElementById('calendarHelp');
+            if (isIOS) {
+                helpEl.textContent = "На iPhone/iPad: кнопка спробує відкрити подію в стандартному додатку Calendar.";
+            } else {
+                helpEl.textContent = "Google Calendar відкриється у новій вкладці.";
+            }
 
             // Basic ICS
             const uid = crypto.randomUUID();
