@@ -332,6 +332,197 @@
             padding: 2rem;
             margin-top: 3rem;
         }
+
+        /* Invitation builder */
+        .guest-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .guest-entry {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.85);
+            border: 2px dashed var(--carnival-yellow);
+            border-radius: 16px;
+            padding: 0.75rem;
+        }
+
+        .guest-entry input {
+            flex: 1 1 150px;
+            padding: 0.6rem 0.8rem;
+            border-radius: 12px;
+            border: 2px solid var(--carnival-orange);
+            font-weight: 600;
+        }
+
+        .guest-entry button {
+            border: none;
+            background: linear-gradient(45deg, var(--carnival-red), var(--carnival-orange));
+            color: #fff;
+            border-radius: 12px;
+            padding: 0.5rem 0.8rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .guest-entry button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .guest-limit {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--carnival-red);
+        }
+
+        .invitation-preview {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.65);
+            padding: 2rem 1rem;
+            z-index: 50;
+        }
+
+        .invitation-preview.hidden {
+            display: none;
+        }
+
+        .invitation-card {
+            position: relative;
+            width: min(90vw, 480px);
+            border-radius: 28px;
+            background: linear-gradient(160deg, #fff3a3, #ffd6ff, #b5e5ff);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            padding: 2rem;
+            overflow: hidden;
+            border: 6px solid var(--carnival-orange);
+        }
+
+        .invitation-header {
+            text-align: center;
+            color: var(--carnival-red);
+            text-shadow: 2px 2px rgba(255, 218, 150, 0.8);
+        }
+
+        .invitation-header h2 {
+            font-size: 2rem;
+        }
+
+        .invitation-body {
+            margin-top: 1.5rem;
+            color: #333;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .invitation-intro {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .invitation-guests {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .invitation-guests li {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 14px;
+            padding: 0.6rem 1rem;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .invitation-details {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 18px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .invitation-footer {
+            margin-top: 1rem;
+            color: var(--carnival-purple);
+        }
+
+        .invitation-ribbons {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .invitation-ribbons span {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            opacity: 0.3;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.95), transparent 60%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .invitation-ribbons span:nth-child(1) {
+            top: -30px;
+            left: -20px;
+            background: radial-gradient(circle at center, rgba(255, 148, 114, 0.95), transparent 60%);
+        }
+
+        .invitation-ribbons span:nth-child(2) {
+            bottom: -40px;
+            right: -10px;
+            animation-delay: 1.5s;
+            background: radial-gradient(circle at center, rgba(255, 242, 128, 0.95), transparent 60%);
+        }
+
+        .invitation-ribbons span:nth-child(3) {
+            top: 40%;
+            right: -40px;
+            animation-delay: 3s;
+            background: radial-gradient(circle at center, rgba(166, 232, 255, 0.95), transparent 60%);
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-card {
+                width: 92vw;
+            }
+
+            .invitation-card {
+                width: 96vw;
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 
@@ -406,10 +597,13 @@
                 <h3 class="title-font" style="color: var(--carnival-blue); font-size: 1.5rem;">
                     <i class="fas fa-calendar-plus"></i> Додати у календар
                 </h3>
-                <div style="margin-top: 1rem;">
+                <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
                     <a id="gcalLink" class="btn-carnival">
                         <i class="fab fa-google"></i> Google Calendar
                     </a>
+                    <button id="openInvitationModal" type="button" class="btn-carnival" style="background: linear-gradient(45deg, var(--carnival-green), var(--carnival-blue));">
+                        <i class="fas fa-envelope-open-text"></i> Отримати запрошення
+                    </button>
                 </div>
                 <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
                     <i class="fas fa-info-circle"></i> Час у лінках формується для вашого часового поясу.
@@ -418,6 +612,60 @@
             </div>
         </div>
     </main>
+
+    <div id="invitationModal" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head" style="background: linear-gradient(45deg, var(--carnival-orange), var(--carnival-red)); color: #fff;">
+                <p class="modal-card-title title-font" style="font-size: 1.4rem;">Створити запрошення</p>
+                <button class="delete" aria-label="close" id="closeInvitationModal"></button>
+            </header>
+            <section class="modal-card-body">
+                <p style="margin-bottom: 1rem; font-weight: 600; color: var(--carnival-blue);">
+                    Введіть ім'я та прізвище гостей, яких хочете запросити (до 7 осіб).
+                </p>
+                <div id="guestListContainer" class="guest-list"></div>
+                <button id="addGuestBtn" type="button" class="btn-carnival" style="margin-top: 1rem; background: linear-gradient(45deg, var(--carnival-yellow), var(--carnival-orange));">
+                    <i class="fas fa-user-plus"></i> Додати гостя
+                </button>
+                <p id="guestLimitNotice" class="guest-limit" aria-live="polite"></p>
+            </section>
+            <footer class="modal-card-foot" style="justify-content: space-between; flex-wrap: wrap;">
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <button id="downloadInvitationBtn" type="button" class="btn-carnival" disabled>
+                        <i class="fas fa-download"></i> Завантажити запрошення
+                    </button>
+                    <button id="printInvitationBtn" type="button" class="btn-carnival" style="background: linear-gradient(45deg, var(--carnival-purple), var(--carnival-blue));" disabled>
+                        <i class="fas fa-print"></i> Друк PDF
+                    </button>
+                </div>
+                <button id="closeInvitationModalFooter" type="button" class="button is-light">Закрити</button>
+            </footer>
+        </div>
+    </div>
+
+    <div id="invitationPreviewWrapper" class="invitation-preview hidden" role="presentation">
+        <div id="invitationPreview" class="invitation-card">
+            <div class="invitation-header">
+                <h2 class="title-font">Святкове запрошення</h2>
+                <p>Благодійний ярмарок до Дня захисників і захисниць України</p>
+            </div>
+            <div class="invitation-body">
+                <p class="invitation-intro">Запрошуємо вас долучитися до нашого яскравого осіннього ярмарку!</p>
+                <ul id="guestNamesPreview" class="invitation-guests"></ul>
+                <div class="invitation-details">
+                    <p><i class="fas fa-clock"></i> <span data-invite="when"></span></p>
+                    <p><i class="fas fa-map-marker-alt"></i> <span data-invite="location"></span></p>
+                </div>
+                <p class="invitation-footer">Буде гаряче від розваг, смаколиків та добрих справ!<br />Чекаємо на вас!</p>
+            </div>
+            <div class="invitation-ribbons">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <div class="container">
@@ -531,6 +779,275 @@
             } else {
                 helpEl.textContent = "Google Calendar відкриється у новій вкладці.";
             }
+        })();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script>
+        (function () {
+            const modal = document.getElementById('invitationModal');
+            const openBtn = document.getElementById('openInvitationModal');
+            if (!modal || !openBtn) { return; }
+
+            const guestContainer = document.getElementById('guestListContainer');
+            const addGuestBtn = document.getElementById('addGuestBtn');
+            const downloadBtn = document.getElementById('downloadInvitationBtn');
+            const printBtn = document.getElementById('printInvitationBtn');
+            const guestLimitNotice = document.getElementById('guestLimitNotice');
+            const closeModalButtons = [
+                document.getElementById('closeInvitationModal'),
+                document.getElementById('closeInvitationModalFooter')
+            ].filter(Boolean);
+            const modalBackdrop = modal.querySelector('.modal-background');
+            const previewWrapper = document.getElementById('invitationPreviewWrapper');
+            const previewCard = document.getElementById('invitationPreview');
+            const guestNamesPreview = document.getElementById('guestNamesPreview');
+            const whenPreview = previewCard.querySelector('[data-invite="when"]');
+            const locationPreview = previewCard.querySelector('[data-invite="location"]');
+            const MAX_GUESTS = 7;
+            let initialized = false;
+
+            const whenSourceText = document.getElementById('whenText')?.textContent?.trim() || '';
+            const locationText = (typeof EVENT_LOCATION === 'string' ? EVENT_LOCATION : '').trim() || 'Зубрянський ліцей Солонківської сільської ради';
+            if (whenPreview) { whenPreview.textContent = whenSourceText; }
+            if (locationPreview) { locationPreview.textContent = locationText; }
+
+            function toggleModal(open) {
+                modal.classList.toggle('is-active', open);
+                document.documentElement.classList.toggle('is-clipped', open);
+                if (open && !initialized) {
+                    addGuestEntry();
+                    initialized = true;
+                }
+                if (open) {
+                    focusFirstInput();
+                }
+            }
+
+            function focusFirstInput() {
+                const firstInput = guestContainer.querySelector('input');
+                if (firstInput) {
+                    setTimeout(() => firstInput.focus(), 120);
+                }
+            }
+
+            function updateGuestLimit() {
+                const totalGuests = guestContainer.children.length;
+                if (totalGuests >= MAX_GUESTS) {
+                    guestLimitNotice.textContent = `Досягнуто максимуму гостей (${MAX_GUESTS}).`;
+                    addGuestBtn.disabled = true;
+                } else {
+                    guestLimitNotice.textContent = '';
+                    addGuestBtn.disabled = false;
+                }
+            }
+
+            function updateRemoveButtons() {
+                const entries = Array.from(guestContainer.querySelectorAll('.guest-entry'));
+                entries.forEach((entry, index) => {
+                    const btn = entry.querySelector('button');
+                    if (btn) {
+                        btn.disabled = entries.length === 1;
+                    }
+                });
+            }
+
+            function updateActionsAvailability() {
+                const guests = collectGuestNames();
+                const hasGuests = guests.length > 0;
+                downloadBtn.disabled = !hasGuests;
+                printBtn.disabled = !hasGuests;
+            }
+
+            function collectGuestNames() {
+                return Array.from(guestContainer.querySelectorAll('.guest-entry')).map(entry => {
+                    const [firstInput, lastInput] = entry.querySelectorAll('input');
+                    const first = (firstInput?.value || '').trim();
+                    const last = (lastInput?.value || '').trim();
+                    const combined = `${first} ${last}`.trim();
+                    return combined && combined.replace(/[\s]+/g, ' ');
+                }).filter(Boolean);
+            }
+
+            function addGuestEntry(first = '', last = '') {
+                if (guestContainer.children.length >= MAX_GUESTS) {
+                    updateGuestLimit();
+                    return null;
+                }
+
+                const entryIndex = guestContainer.children.length + 1;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'guest-entry';
+
+                const firstInput = document.createElement('input');
+                firstInput.type = 'text';
+                firstInput.placeholder = "Ім'я";
+                firstInput.setAttribute('aria-label', `Ім'я гостя ${entryIndex}`);
+                firstInput.value = first;
+
+                const lastInput = document.createElement('input');
+                lastInput.type = 'text';
+                lastInput.placeholder = 'Прізвище';
+                lastInput.setAttribute('aria-label', `Прізвище гостя ${entryIndex}`);
+                lastInput.value = last;
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.innerHTML = '<i class="fas fa-user-minus"></i><span> Видалити</span>';
+                removeBtn.addEventListener('click', () => {
+                    guestContainer.removeChild(wrapper);
+                    if (!guestContainer.children.length) {
+                        addGuestEntry();
+                    }
+                    updateGuestLimit();
+                    updateRemoveButtons();
+                    updateActionsAvailability();
+                });
+
+                [firstInput, lastInput].forEach(input => {
+                    input.addEventListener('input', updateActionsAvailability);
+                });
+
+                wrapper.append(firstInput, lastInput, removeBtn);
+                guestContainer.appendChild(wrapper);
+
+                updateGuestLimit();
+                updateRemoveButtons();
+                updateActionsAvailability();
+                return wrapper;
+            }
+
+            function renderGuestList(names) {
+                guestNamesPreview.innerHTML = '';
+                names.forEach(name => {
+                    const li = document.createElement('li');
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-star';
+                    li.appendChild(icon);
+                    const text = document.createTextNode(` ${name}`);
+                    li.appendChild(text);
+                    guestNamesPreview.appendChild(li);
+                });
+            }
+
+            function showPreview() {
+                previewWrapper.classList.remove('hidden');
+                previewWrapper.setAttribute('aria-hidden', 'false');
+            }
+
+            function hidePreview() {
+                previewWrapper.classList.add('hidden');
+                previewWrapper.setAttribute('aria-hidden', 'true');
+            }
+
+            function waitForNextFrame() {
+                return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            }
+
+            async function captureInvitationCanvas() {
+                showPreview();
+                await waitForNextFrame();
+                if (document.fonts && document.fonts.ready) {
+                    try {
+                        await document.fonts.ready;
+                    } catch (e) {
+                        console.warn('Не вдалося дочекатися завантаження шрифтів', e);
+                    }
+                }
+                if (typeof html2canvas !== 'function') {
+                    console.warn('html2canvas не завантажено');
+                    hidePreview();
+                    return null;
+                }
+                try {
+                    const canvas = await html2canvas(previewCard, {
+                        backgroundColor: null,
+                        scale: window.devicePixelRatio > 1 ? 2 : 1.5
+                    });
+                    return canvas;
+                } finally {
+                    hidePreview();
+                }
+            }
+
+            function triggerImageDownload(dataUrl, filename) {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                if (isIOS) {
+                    const win = window.open();
+                    if (win) {
+                        win.document.write(`<html><head><title>${filename}</title></head><body style="margin:0;background:#fff;text-align:center;"><img src="${dataUrl}" alt="Запрошення" style="width:100%;height:auto;" /></body></html>`);
+                        win.document.close();
+                    } else {
+                        alert('Щоб зберегти зображення, дозвольте відкриття нових вкладок у браузері.');
+                    }
+                } else {
+                    const link = document.createElement('a');
+                    link.href = dataUrl;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+
+            async function handleDownload() {
+                const guests = collectGuestNames();
+                if (!guests.length) { return; }
+                renderGuestList(guests);
+                const canvas = await captureInvitationCanvas();
+                if (!canvas) { return; }
+                const dataUrl = canvas.toDataURL('image/png');
+                triggerImageDownload(dataUrl, 'zaproschennya.png');
+            }
+
+            async function handlePrint() {
+                if (!window.jspdf) {
+                    console.warn('jsPDF не завантажено');
+                    return;
+                }
+                const guests = collectGuestNames();
+                if (!guests.length) { return; }
+                renderGuestList(guests);
+                const canvas = await captureInvitationCanvas();
+                if (!canvas) { return; }
+                const dataUrl = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+                const imgWidth = canvas.width * ratio;
+                const imgHeight = canvas.height * ratio;
+                const marginX = (pageWidth - imgWidth) / 2;
+                const marginY = (pageHeight - imgHeight) / 2;
+                pdf.addImage(dataUrl, 'PNG', marginX, marginY, imgWidth, imgHeight);
+                pdf.save('zaproschennya.pdf');
+            }
+
+            function handleKeydown(evt) {
+                if (evt.key === 'Escape' && modal.classList.contains('is-active')) {
+                    toggleModal(false);
+                }
+            }
+
+            openBtn.addEventListener('click', () => toggleModal(true));
+            closeModalButtons.forEach(btn => btn.addEventListener('click', () => toggleModal(false)));
+            modalBackdrop?.addEventListener('click', () => toggleModal(false));
+            downloadBtn.addEventListener('click', handleDownload);
+            printBtn.addEventListener('click', handlePrint);
+            addGuestBtn.addEventListener('click', () => addGuestEntry());
+            document.addEventListener('keydown', handleKeydown);
+
+            updateGuestLimit();
+            updateRemoveButtons();
+            updateActionsAvailability();
+            previewWrapper?.addEventListener('click', (event) => {
+                if (event.target === previewWrapper) {
+                    hidePreview();
+                }
+            });
+            previewWrapper?.setAttribute('aria-hidden', 'true');
         })();
     </script>
 </body>
