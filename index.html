@@ -88,10 +88,6 @@
         footer a:hover {
             text-decoration: underline;
         }
-
-        .testing-hidden {
-            display: none;
-        }
     </style>
 </head>
 
@@ -121,7 +117,7 @@
     <main class="container my-4">
         <div class="row g-4">
             <!-- Details -->
-            <section class="col-12 col-lg-7">
+            <section class="col-12">
                 <div class="card p-4">
                     <h2 class="h4 mb-3">Деталі події</h2>
 
@@ -153,8 +149,6 @@
                 <div class="card p-4 mt-4">
                     <h3 class="h5">Додати у календар</h3>
                     <div class="d-flex flex-wrap gap-2">
-                        <a id="icsLink" class="btn btn-outline-primary" href="#"
-                            download="Defender-Day-Fair.ics">Завантажити .ics</a>
                         <a id="gcalLink" class="btn btn-outline-success" target="_blank" rel="noopener">Google
                             Calendar</a>
                     </div>
@@ -164,60 +158,6 @@
                 </div>
             </section>
 
-            <!-- CTA / Reminder -->
-            <aside class="col-12 col-lg-5">
-                <div class="card p-4 h-100">
-                    <h2 class="h4 mb-3">Не пропустіть подію</h2>
-                    <p class="mb-3">Натисніть кнопку нижче — ми надішлемо сповіщення <strong>за день</strong> і
-                        <strong>за 2 години</strong> до початку (якщо це підтримується вашим браузером).
-                    </p>
-                    <button id="remindBtn" class="btn btn-ua btn-lg w-100">
-                        🔔 Нагадати мені
-                    </button>
-                    <div id="remindStatus" class="mt-3 small text-muted"></div>
-
-                    <hr class="my-4" />
-                    <h3 class="h6">Питання & поширені випадки</h3>
-                    <ul class="small mb-0">
-                        <li>Сповіщення працюють з HTTPS (GitHub Pages ✅).</li>
-                        <li>У Chrome/Edge (Android/Desktop) можливе фонове планування. В інших — тримайте вкладку
-                            відкритою або додайте подію у календар.</li>
-                    </ul>
-                </div>
-            </aside>
-
-            <!-- Testing Panel (hidden by default) -->
-            <section id="testingPanel" class="col-12 testing-hidden">
-                <div class="card p-4 border-warning">
-                    <div class="d-flex align-items-center mb-3">
-                        <h2 class="h4 mb-0 me-2">🧪 Testing Mode</h2>
-                        <span class="badge bg-warning text-dark">Development Only</span>
-                    </div>
-                    <p class="small text-muted mb-3">Configure custom notification times for testing. Times are relative
-                        to now.</p>
-
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="testTime1" class="form-label">First notification (seconds from now)</label>
-                            <input type="number" class="form-control" id="testTime1" value="10" min="1" max="3600">
-                            <div class="form-text">Default: 10 seconds</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="testTime2" class="form-label">Second notification (seconds from now)</label>
-                            <input type="number" class="form-control" id="testTime2" value="30" min="1" max="3600">
-                            <div class="form-text">Default: 30 seconds</div>
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <button id="updateTestTimes" class="btn btn-warning btn-sm">Update Test Times</button>
-                        <button id="clearNotifications" class="btn btn-outline-secondary btn-sm">Clear All
-                            Notifications</button>
-                    </div>
-
-                    <div id="testingStatus" class="mt-3 small"></div>
-                </div>
-            </section>
         </div>
     </main>
 
@@ -242,16 +182,6 @@
         const EVENT_LOCATION = "Зубрянський ліцей Солонківської сільської ради";
         const EVENT_DESC = "Розваги для всієї родини: гірки, батути, вокальні номери, аквагрим, куліш, ковбаски, напої та багато іншого.";
         /**************************************************/
-
-        // Check for testing mode
-        const urlParams = new URLSearchParams(window.location.search);
-        const TESTING_MODE = urlParams.get('testing') === 'true';
-
-        if (TESTING_MODE) {
-            console.log('🧪 Testing mode enabled');
-            // Add testing indicator to page title
-            document.title = '[TEST] ' + document.title;
-        }
 
         // Normalize year (if author left old year)
         function normalizeYear(date) {
@@ -341,238 +271,7 @@ END:VCALENDAR`;
             } else {
                 helpEl.textContent = "Google Calendar відкриється у новій вкладці.";
             }
-
-            // Basic ICS
-            const uid = crypto.randomUUID();
-            const dtStamp = toGCalDate(new Date()).replace(/Z$/, 'Z');
-            const ics =
-                `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Defender Day Fair//UA Invite//EN
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-BEGIN:VEVENT
-UID:${uid}
-DTSTAMP:${dtStamp}
-DTSTART:${toGCalDate(eventStart)}
-DTEND:${toGCalDate(end)}
-SUMMARY:${EVENT_TITLE}
-DESCRIPTION:${EVENT_DESC}
-LOCATION:${EVENT_LOCATION}
-END:VEVENT
-END:VCALENDAR`;
-            const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-            document.getElementById('icsLink').href = URL.createObjectURL(blob);
         })();
-
-        /* ---------- Notifications ---------- */
-        const statusEl = document.getElementById('remindStatus');
-        const remindBtn = document.getElementById('remindBtn');
-
-        // Calculate notification times based on mode
-        function getNotificationTimes() {
-            if (TESTING_MODE) {
-                const now = new Date();
-                const time1Seconds = parseInt(document.getElementById('testTime1')?.value || '10');
-                const time2Seconds = parseInt(document.getElementById('testTime2')?.value || '30');
-                return {
-                    first: new Date(now.getTime() + time1Seconds * 1000),
-                    second: new Date(now.getTime() + time2Seconds * 1000)
-                };
-            } else {
-                return {
-                    first: new Date(eventStart.getTime() - 24 * 60 * 60 * 1000),
-                    second: new Date(eventStart.getTime() - 2 * 60 * 60 * 1000)
-                };
-            }
-        }
-
-        let { first: oneDayBefore, second: twoHoursBefore } = getNotificationTimes();
-
-        function supportText() {
-            const hasSW = 'serviceWorker' in navigator;
-            const hasNotif = 'Notification' in window;
-            if (!hasSW || !hasNotif) return "Ваш браузер не підтримує веб-сповіщення. Скористайтеся посиланнями на календар вище.";
-            return "Сповіщення підтримуються. Клікніть кнопку нижче для налаштування нагадувань.";
-        }
-        statusEl.textContent = supportText();
-
-        async function registerSW() {
-            // Use external sw.js if present; fallback to inline blob (works on GH Pages).
-            try {
-                // Prefer /sw.js at site root or same folder
-                const reg = await navigator.serviceWorker.register('./sw.js').catch(async () => {
-                    const code = `
-            self.addEventListener('install', ()=>self.skipWaiting());
-            self.addEventListener('activate', e=>e.waitUntil(self.clients.claim()));
-            self.addEventListener('notificationclick', event => {
-              event.notification.close();
-              event.waitUntil(clients.openWindow('./'));
-            });
-          `;
-                    const blob = new Blob([code], { type: 'text/javascript' });
-                    const url = URL.createObjectURL(blob);
-                    return navigator.serviceWorker.register(url);
-                });
-                return reg;
-            } catch (e) {
-                console.error(e);
-                throw new Error("Не вдалося зареєструвати Service Worker.");
-            }
-        }
-
-        function scheduleInPageTimers() {
-            // Get current notification times (may be updated in testing mode)
-            const times = getNotificationTimes();
-            const now = Date.now();
-
-            const plan = TESTING_MODE ? [
-                { t: times.first, tag: 'test-1', title: 'Test Notification #1', body: 'First test notification triggered!' },
-                { t: times.second, tag: 'test-2', title: 'Test Notification #2', body: 'Second test notification triggered!' }
-            ] : [
-                { t: times.first, tag: 'fair-1d', title: 'Нагадування: ярмарок уже завтра', body: 'Початок о 13:20. Зустрінемось на ярмарку!' },
-                { t: times.second, tag: 'fair-2h', title: 'Нагадування: за 2 години', body: 'Скоро початок — о 13:20.' }
-            ];
-
-            let scheduledCount = 0;
-            for (const p of plan) {
-                const diff = p.t.getTime() - now;
-                if (diff > 0) {
-                    console.log(`Scheduling notification "${p.title}" in ${Math.round(diff / 1000)} seconds (${Math.round(diff / 1000 / 60)} minutes)`);
-                    setTimeout(() => {
-                        if (Notification.permission === 'granted') {
-                            new Notification(p.title, {
-                                body: p.body,
-                                tag: p.tag,
-                                icon: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23ffd43b" d="M12 2a7 7 0 0 0-7 7v3.1L3.3 14a1 1 0 0 0 .3 1.4l1.4.9V19a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-2.7l1.4-.9a1 1 0 0 0 .3-1.4L19 12.9V9a7 7 0 0 0-7-7Z"/></svg>'
-                            });
-                        }
-                    }, diff);
-                    scheduledCount++;
-                } else {
-                    console.log(`Skipping past notification "${p.title}"`);
-                }
-            }
-
-            return scheduledCount;
-        } remindBtn.addEventListener('click', async () => {
-            try {
-                // Update button state immediately
-                remindBtn.disabled = true;
-                remindBtn.textContent = "Налаштування...";
-                statusEl.textContent = "Перевіряємо підтримку сповіщень...";
-
-                if (!('Notification' in window)) {
-                    statusEl.textContent = "Ваш браузер не підтримує сповіщення. Додайте подію у календар.";
-                    return;
-                }
-
-                statusEl.textContent = "Запитуємо дозвіл на сповіщення...";
-                const perm = await Notification.requestPermission();
-                if (perm !== 'granted') {
-                    statusEl.textContent = "Сповіщення заборонено. Увімкніть сповіщення в налаштуваннях браузера або додайте подію у календар.";
-                    return;
-                }
-
-                statusEl.textContent = "Реєструємо service worker...";
-                await registerSW();
-
-                // Always use in-page timers since TimestampTrigger is not widely supported
-                statusEl.textContent = "Налаштування нагадувань...";
-                const scheduledCount = scheduleInPageTimers();
-
-                if (scheduledCount === 0) {
-                    statusEl.innerHTML = "ℹ️ Подія вже минула або занадто близько. Додайте подію у календар для нагадування.";
-                    remindBtn.textContent = "Подія минула";
-                    return;
-                }
-
-                // Try to schedule a test notification to verify everything works
-                setTimeout(() => {
-                    if (Notification.permission === 'granted') {
-                        new Notification('Тест сповіщень', {
-                            body: 'Сповіщення працюють! Ви отримаєте нагадування про ярмарок.',
-                            tag: 'test-notification',
-                            icon: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23ffd43b" d="M12 2a7 7 0 0 0-7 7v3.1L3.3 14a1 1 0 0 0 .3 1.4l1.4.9V19a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-2.7l1.4-.9a1 1 0 0 0 .3-1.4L19 12.9V9a7 7 0 0 0-7-7Z"/></svg>'
-                        });
-                    }
-                }, 1000);
-
-                const times = getNotificationTimes();
-                statusEl.innerHTML = "✅ Готово! Нагадування заплановано:<br/>" +
-                    (TESTING_MODE ?
-                        `• Test notification 1: ${times.first.toLocaleString('uk-UA')} (${Math.round((times.first.getTime() - Date.now()) / 1000)}s)<br/>` +
-                        `• Test notification 2: ${times.second.toLocaleString('uk-UA')} (${Math.round((times.second.getTime() - Date.now()) / 1000)}s)<br/>` +
-                        "<small>🧪 Testing mode active - notifications will fire soon!</small>"
-                        :
-                        "• За день до події: " + times.first.toLocaleString('uk-UA') + "<br/>" +
-                        "• За 2 години до події: " + times.second.toLocaleString('uk-UA') + "<br/>" +
-                        "<small>Зауваження: тримайте вкладку відкритою або додайте подію у календар для надійності.</small>"
-                    );
-
-                remindBtn.textContent = "✅ Нагадування активно";
-
-            } catch (err) {
-                console.error('Notification setup error:', err);
-                statusEl.textContent = "❌ Виникла помилка: " + err.message + ". Спробуйте додати подію у календар.";
-                remindBtn.disabled = false;
-                remindBtn.textContent = "🔔 Спробувати ще раз";
-            }
-        });
-
-        // Testing mode initialization and controls
-        if (TESTING_MODE) {
-            document.addEventListener('DOMContentLoaded', () => {
-                // Show testing panel
-                const testingPanel = document.getElementById('testingPanel');
-                if (testingPanel) {
-                    testingPanel.classList.remove('testing-hidden');
-                }
-
-                // Testing controls
-                const updateTestTimesBtn = document.getElementById('updateTestTimes');
-                const clearNotificationsBtn = document.getElementById('clearNotifications');
-                const testingStatusEl = document.getElementById('testingStatus');
-
-                if (updateTestTimesBtn) {
-                    updateTestTimesBtn.addEventListener('click', () => {
-                        // Update the times variables
-                        const times = getNotificationTimes();
-                        oneDayBefore = times.first;
-                        twoHoursBefore = times.second;
-
-                        testingStatusEl.innerHTML = `⏰ Test times updated:<br/>
-                            • First: ${times.first.toLocaleString('uk-UA')} (in ${Math.round((times.first.getTime() - Date.now()) / 1000)}s)<br/>
-                            • Second: ${times.second.toLocaleString('uk-UA')} (in ${Math.round((times.second.getTime() - Date.now()) / 1000)}s)`;
-                    });
-                }
-
-                if (clearNotificationsBtn) {
-                    clearNotificationsBtn.addEventListener('click', async () => {
-                        try {
-                            // Clear all existing notifications
-                            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                                const registrations = await navigator.serviceWorker.getRegistrations();
-                                for (const registration of registrations) {
-                                    const notifications = await registration.getNotifications();
-                                    notifications.forEach(notification => notification.close());
-                                }
-                            }
-                            testingStatusEl.textContent = "🧹 All notifications cleared.";
-                        } catch (error) {
-                            console.error('Failed to clear notifications:', error);
-                            testingStatusEl.textContent = "❌ Failed to clear notifications.";
-                        }
-                    });
-                }
-
-                // Update testing status initially
-                const times = getNotificationTimes();
-                testingStatusEl.innerHTML = `Current test times:<br/>
-                    • First: in ${Math.round((times.first.getTime() - Date.now()) / 1000)} seconds<br/>
-                    • Second: in ${Math.round((times.second.getTime() - Date.now()) / 1000)} seconds`;
-            });
-        }
     </script>
 </body>
 
