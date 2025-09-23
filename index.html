@@ -571,6 +571,42 @@
             cursor: not-allowed;
         }
 
+        .gender-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            align-items: flex-start;
+            min-width: 120px;
+        }
+
+        .gender-options {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .gender-option {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--carnival-blue);
+        }
+
+        .gender-option input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--carnival-orange);
+        }
+
+        .gender-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--carnival-red);
+            margin-bottom: 0.2rem;
+        }
+
         .guest-limit {
             margin-top: 0.5rem;
             font-size: 0.9rem;
@@ -937,8 +973,9 @@
             </header>
             <section class="modal-card-body">
                 <p style="margin-bottom: 1rem; font-weight: 600; color: var(--carnival-blue);">
-                    Введіть ім'я (обов'язково) та прізвище з по батькові (за бажанням) гостей, яких хочете запросити (до
-                    7 осіб).
+                    Введіть ім'я (обов'язково), прізвище з по батькові (за бажанням) та оберіть стать гостей, яких
+                    хочете запросити (до
+                    7 осіб). Стать "Авто" використовує автоматичне визначення.
                 </p>
                 <div id="guestListContainer" class="guest-list"></div>
                 <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
@@ -1178,10 +1215,13 @@
 
             function collectGuestNames() {
                 return Array.from(guestContainer.querySelectorAll('.guest-entry')).map(entry => {
-                    const [firstInput, patronymicInput, lastInput] = entry.querySelectorAll('input');
+                    const [firstInput, patronymicInput, lastInput] = entry.querySelectorAll('input[type="text"]');
+                    const genderRadio = entry.querySelector('input[type="radio"]:checked');
+
                     const first = (firstInput?.value || '').trim();
                     const patronymic = (patronymicInput?.value || '').trim();
                     const last = (lastInput?.value || '').trim();
+                    const selectedGender = genderRadio?.value || 'auto';
 
                     // Only require first name, other fields are optional
                     if (!first) return null;
@@ -1194,11 +1234,15 @@
 
                     const combined = nameParts.join(' ');
 
-                    return combined.replace(/\s+/g, ' ');
+                    return {
+                        fullName: combined.replace(/\s+/g, ' '),
+                        firstName: first,
+                        selectedGender: selectedGender
+                    };
                 }).filter(Boolean);
             }
 
-            function addGuestEntry(first = '', patronymic = '', last = '') {
+            function addGuestEntry(first = '', patronymic = '', last = '', selectedGender = 'auto') {
                 if (guestContainer.children.length >= MAX_GUESTS) {
                     updateGuestLimit();
                     return null;
@@ -1227,6 +1271,53 @@
                 lastInput.setAttribute('aria-label', `Прізвище гостя ${entryIndex}`);
                 lastInput.value = last;
 
+                // Create gender selection group
+                const genderSelection = document.createElement('div');
+                genderSelection.className = 'gender-selection';
+
+                const genderLabel = document.createElement('div');
+                genderLabel.className = 'gender-label';
+                genderLabel.textContent = 'Стать:';
+
+                const genderOptions = document.createElement('div');
+                genderOptions.className = 'gender-options';
+
+                // Auto detection option
+                const autoOption = document.createElement('label');
+                autoOption.className = 'gender-option';
+                const autoRadio = document.createElement('input');
+                autoRadio.type = 'radio';
+                autoRadio.name = `gender-${entryIndex}`;
+                autoRadio.value = 'auto';
+                autoRadio.checked = selectedGender === 'auto';
+                autoOption.appendChild(autoRadio);
+                autoOption.appendChild(document.createTextNode('Авто'));
+
+                // Male option
+                const maleOption = document.createElement('label');
+                maleOption.className = 'gender-option';
+                const maleRadio = document.createElement('input');
+                maleRadio.type = 'radio';
+                maleRadio.name = `gender-${entryIndex}`;
+                maleRadio.value = 'male';
+                maleRadio.checked = selectedGender === 'male';
+                maleOption.appendChild(maleRadio);
+                maleOption.appendChild(document.createTextNode('Чол.'));
+
+                // Female option
+                const femaleOption = document.createElement('label');
+                femaleOption.className = 'gender-option';
+                const femaleRadio = document.createElement('input');
+                femaleRadio.type = 'radio';
+                femaleRadio.name = `gender-${entryIndex}`;
+                femaleRadio.value = 'female';
+                femaleRadio.checked = selectedGender === 'female';
+                femaleOption.appendChild(femaleRadio);
+                femaleOption.appendChild(document.createTextNode('Жін.'));
+
+                genderOptions.append(autoOption, maleOption, femaleOption);
+                genderSelection.append(genderLabel, genderOptions);
+
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
                 removeBtn.innerHTML = '<i class="fas fa-user-minus"></i><span> Видалити</span>';
@@ -1240,6 +1331,7 @@
                     updateActionsAvailability();
                 });
 
+                // Add event listeners for inputs and radio buttons
                 [firstInput, patronymicInput, lastInput].forEach(input => {
                     input.addEventListener('input', () => {
                         updateActionsAvailability();
@@ -1250,7 +1342,18 @@
                     });
                 });
 
-                wrapper.append(firstInput, patronymicInput, lastInput, removeBtn);
+                // Add event listeners for gender radio buttons
+                [autoRadio, maleRadio, femaleRadio].forEach(radio => {
+                    radio.addEventListener('change', () => {
+                        updateActionsAvailability();
+
+                        // Update preview when gender selection changes
+                        const guests = collectGuestNames();
+                        renderGuestList(guests);
+                    });
+                });
+
+                wrapper.append(firstInput, patronymicInput, lastInput, genderSelection, removeBtn);
                 guestContainer.appendChild(wrapper);
 
                 updateGuestLimit();
@@ -1267,69 +1370,75 @@
             }
 
             async function detectGendersForAllGuests() {
-                const entries = Array.from(guestContainer.querySelectorAll('.guest-entry'));
-                const firstNames = entries.map(entry => {
-                    const firstInput = entry.querySelector('input');
-                    return (firstInput?.value || '').trim();
-                }).filter(Boolean);
+                const guests = collectGuestNames();
 
-                if (firstNames.length === 0) return {};
+                // Separate guests into manual and auto-detect groups
+                const genderMap = {};
+                const namesToDetect = [];
 
-                try {
-                    // Build the API URL with all names at once
-                    const url = new URL('https://api.genderize.io');
-                    firstNames.forEach(name => {
-                        url.searchParams.append('name[]', name);
-                    });
-                    url.searchParams.set('country_id', 'UA');
-
-                    const response = await fetch(url.toString());
-                    const data = await response.json();
-
-                    // Create a map of name -> gender
-                    const genderMap = {};
-                    if (Array.isArray(data)) {
-                        data.forEach(item => {
-                            if (item.name && item.gender) {
-                                genderMap[item.name.toLowerCase()] = item.gender;
-                            }
-                        });
+                guests.forEach(guest => {
+                    if (guest.selectedGender === 'auto') {
+                        // Need to detect gender via API
+                        namesToDetect.push(guest.firstName);
+                    } else {
+                        // Use manually selected gender
+                        genderMap[guest.firstName.toLowerCase()] = guest.selectedGender;
                     }
+                });
 
-                    return genderMap;
-                } catch (error) {
-                    console.warn('Gender detection failed:', error);
-                    return {};
+                // Only call API if there are names that need detection
+                if (namesToDetect.length > 0) {
+                    try {
+                        // Build the API URL with names that need detection
+                        const url = new URL('https://api.genderize.io');
+                        namesToDetect.forEach(name => {
+                            url.searchParams.append('name[]', name);
+                        });
+                        url.searchParams.set('country_id', 'UA');
+
+                        const response = await fetch(url.toString());
+                        const data = await response.json();
+
+                        // Add API results to gender map
+                        if (Array.isArray(data)) {
+                            data.forEach(item => {
+                                if (item.name && item.gender) {
+                                    genderMap[item.name.toLowerCase()] = item.gender;
+                                }
+                            });
+                        }
+                    } catch (error) {
+                        console.warn('Gender detection failed:', error);
+                    }
                 }
+
+                return genderMap;
             }
 
-            function renderGuestList(names, genderMap = {}) {
+            function renderGuestList(guests, genderMap = {}) {
                 if (!guestNamesPreview) {
                     return;
                 }
 
-                const formattedNames = names.map(capitalizeNames);
+                // Handle both old format (array of strings) and new format (array of objects)
+                let guestList;
+                if (guests.length > 0 && typeof guests[0] === 'string') {
+                    // Old format - convert to new format for backward compatibility
+                    guestList = guests.map(name => ({ fullName: name, firstName: name.split(' ')[0] }));
+                } else {
+                    // New format
+                    guestList = guests;
+                }
+
+                const formattedNames = guestList.map(guest => capitalizeNames(guest.fullName));
 
                 if (guestGreeting) {
                     if (!formattedNames.length) {
                         guestGreeting.textContent = '';
                     } else if (formattedNames.length === 1) {
                         // For single guest, use gender from map if available
-                        const displayName = formattedNames[0];
-                        const firstNameForGender = displayName.split(' ').find(part => {
-                            // Find the actual first name (not surname) for gender detection
-                            const entries = Array.from(guestContainer.querySelectorAll('.guest-entry'));
-                            for (const entry of entries) {
-                                const [firstInput] = entry.querySelectorAll('input');
-                                const firstNameFromInput = (firstInput?.value || '').trim();
-                                if (firstNameFromInput && part.toLowerCase() === firstNameFromInput.toLowerCase()) {
-                                    return true;
-                                }
-                            }
-                            return false;
-                        });
-
-                        const gender = firstNameForGender ? genderMap[firstNameForGender.toLowerCase()] : null;
+                        const guest = guestList[0];
+                        const gender = genderMap[guest.firstName.toLowerCase()];
 
                         if (gender === 'male') {
                             guestGreeting.textContent = 'Шановний';
