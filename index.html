@@ -10,9 +10,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts for playful typography -->
+    <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Nunito:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Great+Vibes&display=swap"
         rel="stylesheet">
 
     <style>
@@ -34,6 +37,14 @@
             --autumn-orange: #ff8c42;
             --autumn-gold: #ffd662;
             --autumn-red: #d2691e;
+            /* October fair palette */
+            --fair-deep-blue: #0b3d91;
+            --fair-mid-blue: #1f6fd1;
+            --fair-soft-blue: #e3f3ff;
+            --fair-sky: #aedde8;
+            --fair-gold: #ffd35a;
+            --fair-orange: #ff8c42;
+            --fair-cream: #fff9ef;
         }
 
         * {
@@ -573,134 +584,192 @@
 
         .invitation-card {
             position: relative;
-            width: min(90vw, 480px);
-            border-radius: 28px;
-            background: linear-gradient(160deg, #fff3a3, #ffd6ff, #b5e5ff);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-            padding: 2rem;
+            width: min(90vw, 560px);
+            border-radius: 34px;
+            background: linear-gradient(180deg, var(--fair-soft-blue) 0%, #ffffff 48%, var(--fair-cream) 100%);
+            box-shadow: 0 28px 45px rgba(11, 61, 145, 0.18);
+            padding: 3rem 2.75rem 3.5rem;
             overflow: hidden;
-            border: 6px solid var(--carnival-orange);
+            border: 12px double var(--fair-deep-blue);
+            color: var(--fair-deep-blue);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .invitation-card::before,
+        .invitation-card::after {
+            content: '';
+            position: absolute;
+            width: 340px;
+            height: 240px;
+            z-index: 0;
+            opacity: 0.45;
+            filter: blur(0.3px);
+        }
+
+        .invitation-card::before {
+            top: -140px;
+            left: -120px;
+            background: radial-gradient(circle at 35% 35%, rgba(31, 111, 209, 0.85), transparent 70%);
+        }
+
+        .invitation-card::after {
+            bottom: -160px;
+            right: -140px;
+            background: radial-gradient(circle at 60% 40%, rgba(255, 167, 64, 0.75), transparent 70%);
         }
 
         .invitation-header {
             text-align: center;
-            color: var(--carnival-red);
-            text-shadow: 2px 2px rgba(255, 218, 150, 0.8);
+            position: relative;
+            z-index: 1;
+            padding-top: 0.5rem;
+        }
+
+        .invite-goal {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.4rem 1.4rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(11, 61, 145, 0.35);
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--fair-deep-blue);
+            font-family: 'Nunito', sans-serif;
+            box-shadow: 0 6px 18px rgba(11, 61, 145, 0.18);
+            margin-bottom: 1.5rem;
+        }
+
+        .invite-goal i {
+            color: var(--fair-deep-blue);
         }
 
         .invitation-header h2 {
-            font-size: 2rem;
+            font-size: 1.95rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.35;
+            margin-bottom: 0.75rem;
+        }
+
+        .invitation-subtitle {
+            font-size: 1.1rem;
+            letter-spacing: 0.9px;
+        }
+
+        .invitation-divider {
+            width: 120px;
+            height: 2px;
+            margin: 1.4rem auto 0;
+            background: linear-gradient(90deg, transparent, var(--fair-gold), transparent);
         }
 
         .invitation-body {
-            margin-top: 1.5rem;
-            color: #333;
+            margin-top: 2.25rem;
+            color: #163c72;
             text-align: center;
-            font-weight: 600;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .invitation-honorees {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.4rem;
+            color: var(--fair-deep-blue);
+            margin: 0 0 1.4rem;
+            line-height: 1.2;
+        }
+
+        .invitation-honorees span {
+            display: block;
+        }
+
+        .invitation-honorees span+span {
+            margin-top: 0.2rem;
+        }
+
+        .invitation-callout {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.15rem;
+            color: var(--fair-deep-blue);
+            margin: 0 0 0.35rem;
+            letter-spacing: 1px;
+        }
+
+        .invitation-callout:empty,
+        .invitation-honorees:empty {
+            display: none;
         }
 
         .invitation-intro {
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            margin-bottom: 1.5rem;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .invitation-guests {
-            list-style: none;
-            padding: 0;
-            margin: 1rem 0;
+        .invitation-details {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(11, 61, 145, 0.18);
+            border-radius: 22px;
+            padding: 1.35rem 1.4rem;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.85rem;
+            margin: 0 auto 1.8rem;
+            max-width: 360px;
+            box-shadow: 0 12px 32px rgba(11, 61, 145, 0.12);
         }
 
-        .invitation-guests li {
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 14px;
-            padding: 0.6rem 1rem;
-            font-size: 1.05rem;
+        .invitation-details p {
+            margin: 0;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            font-weight: 500;
         }
 
-        .invitation-details {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 18px;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin: 1rem 0;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        .invitation-details i {
+            color: var(--fair-deep-blue);
         }
 
         .invitation-footer {
-            margin-top: 1rem;
-            color: var(--carnival-purple);
+            font-size: 1rem;
+            color: var(--fair-deep-blue);
+            line-height: 1.5;
         }
 
-        .invitation-ribbons {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
-
-        .invitation-ribbons span {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            opacity: 0.3;
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.95), transparent 60%);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .invitation-ribbons span:nth-child(1) {
-            top: -30px;
-            left: -20px;
-            background: radial-gradient(circle at center, rgba(255, 148, 114, 0.95), transparent 60%);
-        }
-
-        .invitation-ribbons span:nth-child(2) {
-            bottom: -40px;
-            right: -10px;
-            animation-delay: 1.5s;
-            background: radial-gradient(circle at center, rgba(255, 242, 128, 0.95), transparent 60%);
-        }
-
-        .invitation-ribbons span:nth-child(3) {
-            top: 40%;
-            right: -40px;
-            animation-delay: 3s;
-            background: radial-gradient(circle at center, rgba(166, 232, 255, 0.95), transparent 60%);
+        .invitation-footer strong {
+            display: block;
+            margin-top: 0.6rem;
+            letter-spacing: 1px;
         }
 
         /* Logo styling for invitation */
         .invitation-logo {
             position: absolute;
-            bottom: 15px;
-            right: 15px;
-            width: 80px;
-            height: 60px;
+            top: 28px;
+            right: 32px;
+            width: 92px;
+            height: 72px;
             object-fit: contain;
             object-position: center;
-            opacity: 0.8;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(11, 61, 145, 0.35);
+            box-shadow: 0 10px 18px rgba(11, 61, 145, 0.15);
+            z-index: 2;
+            padding: 0.35rem;
         }
 
         @media (max-width: 480px) {
@@ -709,8 +778,22 @@
             }
 
             .invitation-card {
-                width: 96vw;
-                padding: 1.5rem;
+                width: 95vw;
+                padding: 2.2rem 1.75rem 2.8rem;
+                border-width: 10px;
+                border-radius: 28px;
+            }
+
+            .invitation-callout {
+                font-size: 1.9rem;
+            }
+
+            .invitation-honorees {
+                font-size: 2rem;
+            }
+
+            .invitation-details {
+                padding: 1.1rem;
             }
         }
     </style>
@@ -858,33 +941,22 @@
                     <i class="fas fa-hands-helping" aria-hidden="true"></i>
                     <span>Наша ціль — допомога ЗСУ</span>
                 </div>
-                <div class="text-center mb-2 ribbon">
-                    <!-- UA wave ribbon -->
-                    <svg viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true">
-                        <path d="M0,80 C200,120 340,40 580,60 C800,80 950,120 1200,70 L1200,0 L0,0 Z"
-                            fill="var(--ua-blue)">
-                        </path>
-                        <path d="M0,90 C220,130 360,50 590,70 C820,90 960,130 1200,80 L1200,50 L0,50 Z"
-                            fill="var(--ua-yellow)"></path>
-                    </svg>
-                </div>
-                <h2 class="title-font">Святкове запрошення</h2>
-                <p>Благодійний ярмарок до Дня захисників і захисниць України</p>
+                <h2>Благодійний ярмарок до Дня захисників і захисниць України</h2>
+                <p class="invitation-subtitle">та свята Покрови Пресвятої Богородиці</p>
+                <div class="invitation-divider"></div>
             </div>
             <div class="invitation-body">
-                <p class="invitation-intro">Запрошуємо вас долучитися до нашого яскравого осіннього ярмарку!</p>
-                <ul id="guestNamesPreview" class="invitation-guests"></ul>
-                <div class="invitation-details">
-                    <p><i class="fas fa-clock"></i> <span data-invite="when"></span></p>
-                    <p><i class="fas fa-map-marker-alt"></i> <span data-invite="location"></span></p>
+                <p id="guestGreeting" class="invitation-callout"></p>
+                <p id="guestNamesPreview" class="invitation-honorees"></p>
+                <p class="invitation-intro">Запрошуємо вас на святкову подію, що згуртовує нашу громаду задля допомоги
+                    ЗСУ.</p>
+                <div class="invitation-details" aria-live="polite">
+                    <p><i class="fas fa-clock"></i><span data-invite="when"></span></p>
+                    <p><i class="fas fa-map-marker-alt"></i><span data-invite="location"></span></p>
                 </div>
-                <p class="invitation-footer">Буде гаряче від розваг, смаколиків та добрих справ!<br />Чекаємо на вас!
+                <p class="invitation-footer">Будемо раді бачити вас разом із родиною та друзями.<br /><strong>Із повагою
+                        адміністрація Зубрянського ліцею</strong>
                 </p>
-            </div>
-            <div class="invitation-ribbons">
-                <span></span>
-                <span></span>
-                <span></span>
             </div>
             <img src="logo.png" alt="Logo" class="invitation-logo">
         </div>
@@ -1023,6 +1095,7 @@
             const modalBackdrop = modal.querySelector('.modal-background');
             const previewWrapper = document.getElementById('invitationPreviewWrapper');
             const previewCard = document.getElementById('invitationPreview');
+            const guestGreeting = document.getElementById('guestGreeting');
             const guestNamesPreview = document.getElementById('guestNamesPreview');
             const whenPreview = previewCard.querySelector('[data-invite="when"]');
             const locationPreview = previewCard.querySelector('[data-invite="location"]');
@@ -1146,16 +1219,29 @@
             }
 
             function renderGuestList(names) {
-                guestNamesPreview.innerHTML = '';
-                names.forEach(name => {
-                    const li = document.createElement('li');
-                    const icon = document.createElement('i');
-                    icon.className = 'fas fa-star';
-                    li.appendChild(icon);
-                    const formattedName = capitalizeNames(name);
-                    const text = document.createTextNode(` ${formattedName}`);
-                    li.appendChild(text);
-                    guestNamesPreview.appendChild(li);
+                if (!guestNamesPreview) {
+                    return;
+                }
+
+                const formattedNames = names.map(capitalizeNames);
+
+                if (guestGreeting) {
+                    if (!formattedNames.length) {
+                        guestGreeting.textContent = '';
+                    } else if (formattedNames.length === 1) {
+                        guestGreeting.textContent = 'Шановний(а)';
+                    } else {
+                        guestGreeting.textContent = 'Шановні';
+                    }
+                }
+
+                guestNamesPreview.replaceChildren();
+
+                formattedNames.forEach((name, index) => {
+                    const span = document.createElement('span');
+                    const suffix = index === formattedNames.length - 1 ? '!' : ',';
+                    span.textContent = `${name}${suffix}`;
+                    guestNamesPreview.appendChild(span);
                 });
             }
 
