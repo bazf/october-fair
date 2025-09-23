@@ -537,11 +537,21 @@
         }
 
         .guest-entry input {
-            flex: 1 1 150px;
+            flex: 1 1 120px;
+            min-width: 120px;
             padding: 0.6rem 0.8rem;
             border-radius: 12px;
             border: 2px solid var(--carnival-orange);
             font-weight: 600;
+        }
+
+        .guest-entry input[required] {
+            border-color: var(--carnival-red);
+        }
+
+        .guest-entry input[required]::placeholder {
+            color: var(--carnival-red);
+            font-weight: 700;
         }
 
         .guest-entry button {
@@ -927,7 +937,8 @@
             </header>
             <section class="modal-card-body">
                 <p style="margin-bottom: 1rem; font-weight: 600; color: var(--carnival-blue);">
-                    Введіть ім'я та прізвище гостей, яких хочете запросити (до 7 осіб).
+                    Введіть ім'я (обов'язково) та прізвище з по батькові (за бажанням) гостей, яких хочете запросити (до
+                    7 осіб).
                 </p>
                 <div id="guestListContainer" class="guest-list"></div>
                 <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
@@ -1161,21 +1172,33 @@
 
             function updateActionsAvailability() {
                 const guests = collectGuestNames();
-                const hasGuests = guests.length > 0;
-                printBtn.disabled = !hasGuests;
+                const hasValidGuests = guests.length > 0;
+                printBtn.disabled = !hasValidGuests;
             }
 
             function collectGuestNames() {
                 return Array.from(guestContainer.querySelectorAll('.guest-entry')).map(entry => {
-                    const [firstInput, lastInput] = entry.querySelectorAll('input');
+                    const [firstInput, patronymicInput, lastInput] = entry.querySelectorAll('input');
                     const first = (firstInput?.value || '').trim();
+                    const patronymic = (patronymicInput?.value || '').trim();
                     const last = (lastInput?.value || '').trim();
-                    const combined = `${first} ${last}`.trim();
-                    return combined && combined.replace(/[\s]+/g, ' ');
+
+                    // Only require first name, other fields are optional
+                    if (!first) return null;
+
+                    // Build full name with surname first if available: "Surname First Patronymic"
+                    const nameParts = [];
+                    if (last) nameParts.push(last);  // Surname first
+                    nameParts.push(first);           // First name
+                    if (patronymic) nameParts.push(patronymic);  // Patronymic last
+
+                    const combined = nameParts.join(' ');
+
+                    return combined.replace(/\s+/g, ' ');
                 }).filter(Boolean);
             }
 
-            function addGuestEntry(first = '', last = '') {
+            function addGuestEntry(first = '', patronymic = '', last = '') {
                 if (guestContainer.children.length >= MAX_GUESTS) {
                     updateGuestLimit();
                     return null;
@@ -1187,9 +1210,16 @@
 
                 const firstInput = document.createElement('input');
                 firstInput.type = 'text';
-                firstInput.placeholder = "Ім'я";
+                firstInput.placeholder = "Ім'я *";
                 firstInput.setAttribute('aria-label', `Ім'я гостя ${entryIndex}`);
+                firstInput.setAttribute('required', 'true');
                 firstInput.value = first;
+
+                const patronymicInput = document.createElement('input');
+                patronymicInput.type = 'text';
+                patronymicInput.placeholder = 'По батькові';
+                patronymicInput.setAttribute('aria-label', `По батькові гостя ${entryIndex}`);
+                patronymicInput.value = patronymic;
 
                 const lastInput = document.createElement('input');
                 lastInput.type = 'text';
@@ -1210,11 +1240,17 @@
                     updateActionsAvailability();
                 });
 
-                [firstInput, lastInput].forEach(input => {
-                    input.addEventListener('input', updateActionsAvailability);
+                [firstInput, patronymicInput, lastInput].forEach(input => {
+                    input.addEventListener('input', async () => {
+                        updateActionsAvailability();
+
+                        // Update preview with gender detection when user types
+                        const guests = collectGuestNames();
+                        await renderGuestList(guests);
+                    });
                 });
 
-                wrapper.append(firstInput, lastInput, removeBtn);
+                wrapper.append(firstInput, patronymicInput, lastInput, removeBtn);
                 guestContainer.appendChild(wrapper);
 
                 updateGuestLimit();
@@ -1230,7 +1266,22 @@
                 }).join(' ');
             }
 
-            function renderGuestList(names) {
+            async function detectGender(firstName) {
+                try {
+                    const response = await fetch(`https://api.genderize.io?name[]=${encodeURIComponent(firstName)}&country_id=UA`);
+                    const data = await response.json();
+
+                    if (data && data.length > 0 && data[0].gender) {
+                        return data[0].gender;
+                    }
+                    return null;
+                } catch (error) {
+                    console.warn('Gender detection failed:', error);
+                    return null;
+                }
+            }
+
+            async function renderGuestList(names) {
                 if (!guestNamesPreview) {
                     return;
                 }
@@ -1241,7 +1292,18 @@
                     if (!formattedNames.length) {
                         guestGreeting.textContent = '';
                     } else if (formattedNames.length === 1) {
-                        guestGreeting.textContent = 'Шановний(а)';
+                        // For single guest, detect gender and use appropriate greeting
+                        const firstName = formattedNames[0].split(' ')[0];
+                        const gender = await detectGender(firstName);
+
+                        if (gender === 'male') {
+                            guestGreeting.textContent = 'Шановний';
+                        } else if (gender === 'female') {
+                            guestGreeting.textContent = 'Шановна';
+                        } else {
+                            // Fallback if gender detection fails
+                            guestGreeting.textContent = 'Шановний(а)';
+                        }
                     } else {
                         guestGreeting.textContent = 'Шановні';
                     }
@@ -1341,7 +1403,7 @@
                 }
                 const guests = collectGuestNames();
                 if (!guests.length) { return; }
-                renderGuestList(guests);
+                await renderGuestList(guests);
                 const canvas = await captureInvitationCanvas();
                 if (!canvas) { return; }
                 const dataUrl = canvas.toDataURL('image/png');
